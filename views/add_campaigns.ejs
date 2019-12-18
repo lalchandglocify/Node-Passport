@@ -1,0 +1,54 @@
+
+<% include ./partials/topbar %> 
+<% include ./partials/sidebar %>
+ <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+
+
+<div class="card-body">
+                  <h4 class="card-title">Add Campaign</h4>
+				  
+               <% include ./partials/messages %>
+
+                  <form class="forms-sample" action="/campaigns/add-new" method="POST">
+                  
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Name</label>
+                      <input type="text" class="form-control" name = "name"  value="" placeholder="Name">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Leads</label>
+                      <input type="text" class="form-control" name = "leads"  value="" placeholder="Leads">
+                    </div>
+
+
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Connected</label>
+                      <input type="text" class="form-control" name = "connected"  value="" placeholder="Connected">
+                    </div>
+
+
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Closed</label>
+                      <input type="text" class="form-control" name = "closed"  value="" placeholder="Closed">
+                    </div>
+
+                     <div class="form-group">
+                      <label for="exampleInputUsername1">Tottal Sales </label>
+                      <input type="text" class="form-control" name = "tottal_sales" value="" placeholder="Tottal Sales ">
+                    </div>
+
+
+
+
+
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                
+                  </form>
+                </div>
+				
+      <!-- main-panel ends -->
+</div></div></div>
+               <% include ./partials/footer %> 
