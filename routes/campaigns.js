@@ -21,6 +21,35 @@ router.get('/add-new', ensureAuthenticated, (req, res) =>
 );
 
 
+router.get('/view/:id', ensureAuthenticated, async(req, res) => {
+
+var campaign = await Campaign.findById(req.params.id)
+
+res.send(campaign);
+})
+router.get('/edit/:id', ensureAuthenticated, async(req, res) =>{
+
+var campaign =  await Campaign.findById(req.params.id)
+
+res.send(campaign);
+
+});
+
+
+router.get('/delete/:id', ensureAuthenticated, (req, res) =>
+
+Campaign.deleteOne({_id:req.params.id}).then(user => {
+                req.flash(
+                  'success_msg',
+                  'campaign Deleted'
+                );
+                res.redirect('/campaigns');
+              })
+              .catch(err => console.log(err))
+
+);
+
+
   router.post('/add-new',ensureAuthenticated, async(req, res) => {
     user =  req.user;
    

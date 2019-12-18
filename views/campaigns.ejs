@@ -10,6 +10,7 @@
             <div class="col-md-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
+                <% include ./partials/messages %>
                   <p class="card-title mb-0">Campaigns</p>
                   <a href="/campaigns/add-new" type="button" class="btn btn-success pull-right" style="margin-left: 890px;margin-top: 10px;">Add New</a>
                   <div class="table-responsive">
@@ -37,7 +38,7 @@
               <td> <%= campaign[i].tottal_sales %></td>
               <td><%= campaign[i].created_at %></td>
               <td><a class='far fa-eye' href="/campaigns/view/<%= campaign[i]._id %>" style='font-size:16px;color:#1f5a1f;padding-left: 6px;'></a>
-                   <a class='far fa-edit' href="/campaigns/edit/._id" style='font-size:16px;color:#bf5408;padding-left: 6px;'></a>
+                   <a class='far fa-edit' href="/campaigns/edit/<%= campaign[i]._id %>" style='font-size:16px;color:#bf5408;padding-left: 6px;'></a>
                  <a class='fas fa-times' href="/campaigns/delete/<%= campaign[i]._id %>" style='font-size:16px;color:red;padding-left: 6px;' onclick="return confirm('Are you sure?');"></a></td>
         
               
