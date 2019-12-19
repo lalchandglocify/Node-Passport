@@ -9,7 +9,7 @@ router.get('/', ensureAuthenticated, async(req, res) =>
 
   res.render('campaigns', {
 
-    user: req.user,campaign:await Campaign.find({})
+    user: req.user,campaign:await Campaign.find({}).populate('user_id')
 
   })
 );
@@ -24,14 +24,17 @@ router.get('/add-new', ensureAuthenticated, (req, res) =>
 router.get('/view/:id', ensureAuthenticated, async(req, res) => {
 
 var campaign = await Campaign.findById(req.params.id).populate('user_id');
-
-res.send(campaign);
+res.render('campaignView', {
+    user: req.user,campaign:campaign
+  })
 })
 router.get('/edit/:id', ensureAuthenticated, async(req, res) =>{
 
 var campaign =  await Campaign.findById(req.params.id)
 
-res.send(campaign);
+res.render('add_campaigns', {
+    user: req.user,campaign:campaign
+  })
 
 });
 
@@ -84,6 +87,42 @@ Campaign.deleteOne({_id:req.params.id}).then(user => {
                   'campaign Added'
                 );
                 res.redirect('/campaigns/add-new');
+              })
+              .catch(err => console.log(err));
+}
+
+});
+
+   router.post('/update/:id',ensureAuthenticated, async(req, res) => {
+    user =  req.user;
+   
+//const campaigns = await Campaign.find({});
+    
+//console.log(campaigns);
+    
+  const { name,leads,connected,closed,tottal_sales } = req.body;
+  let errors = [];
+
+  if (!name || !leads || !connected || !closed || !tottal_sales) {
+    errors.push({ msg: 'Please enter all fields' });
+  }
+
+
+  if (errors.length > 0) {
+    res.render('add_campaigns', {
+      errors,
+      name
+    });
+  } else {
+    const  user_id = user._id;
+    const newCampaign =  Campaign.updateOne({_id:req.params.id},{
+          name,user_id,leads,connected,closed,tottal_sales
+        }).then(user => {
+                req.flash(
+                  'success_msg',
+                  'campaign Updated'
+                );
+                res.redirect('back');
               })
               .catch(err => console.log(err));
 }

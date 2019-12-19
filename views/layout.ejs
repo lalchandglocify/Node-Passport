@@ -30,4 +30,34 @@
 <script src="/js/todolist.js"></script>
 <script src="/js/dashboard.js"></script>
 <script src="/js/todolist.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+      <script type="text/javascript">
+      $(document).ready(function () {
+       $('table').on('click', '.btn-danger', function(event)
+        {
+            event.preventDefault();
+       var href = $(this).attr('href');
+     
+             swal({
+                      title: "Are you sure?",
+                      text: "It will permanently deleted !",
+                      icon: "warning",
+                      buttons: true,
+                      dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                      if (willDelete) {
+                        swal("Selected item has been deleted!", {
+                          icon: "success",
+                        });
+                      window.location.href = href;
+                      } 
+                     
+                    });
+        });
+      })
+    </script>  
+
 </html>
