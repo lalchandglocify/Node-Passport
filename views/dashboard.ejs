@@ -129,12 +129,12 @@
 							 </tr>
                       </thead>
                       <tbody>
-							
+							<% for (var i = 0; i < campaign.length; i++) { %>
 						<tr>							
-							<td> </td>
-							<td> </td>
+							<td> <%= campaign[i].name %></td>
+							<td> <%= campaign[i].created_at %></td>
 						
-							
+							<%   } %>
 							  </tr>
 							 
                       </tbody>
