@@ -23,7 +23,7 @@ router.get('/add-new', ensureAuthenticated, (req, res) =>
 
 router.get('/view/:id', ensureAuthenticated, async(req, res) => {
 
-var campaign = await Campaign.findById(req.params.id)
+var campaign = await Campaign.findById(req.params.id).populate('user_id');
 
 res.send(campaign);
 })
