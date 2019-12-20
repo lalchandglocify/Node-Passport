@@ -58,6 +58,7 @@ app.use(function(req, res, next) {
 app.use('/', require('./routes/index.js'));
 app.use('/users', require('./routes/users.js'));
 app.use('/campaigns', require('./routes/campaigns.js'));
+app.use('/messages', require('./routes/messages.js'));
 
 const PORT = process.env.PORT || 5000;
     server = require('http').createServer(app),
