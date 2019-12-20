@@ -129,7 +129,14 @@ Campaign.deleteOne({_id:req.params.id}).then(user => {
 
 });
 
+router.get('/chat', ensureAuthenticated, async(req, res) =>
 
+  res.render('chat', {
+
+    user: req.user,campaign:await Campaign.find({}).populate('user_id')
+
+  })
+);
 
 
 module.exports = router;
