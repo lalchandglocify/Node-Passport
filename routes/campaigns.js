@@ -144,7 +144,7 @@ router.get('/singleChat', ensureAuthenticated, async(req, res) =>
 
   res.render('singleChat', {
 
-    user: req.user,users:await User.find({})
+    user: req.user,users:await User.find({_id: {$ne: req.user._id}})
 
   })
 );
