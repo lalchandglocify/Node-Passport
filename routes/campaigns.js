@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const Campaign = require('../models/Campaign');
+const User = require('../models/User');
 
 
 // campaigns
@@ -134,6 +135,16 @@ router.get('/chat', ensureAuthenticated, async(req, res) =>
   res.render('chat', {
 
     user: req.user,campaign:await Campaign.find({}).populate('user_id')
+
+  })
+);
+
+
+router.get('/singleChat', ensureAuthenticated, async(req, res) =>
+
+  res.render('singleChat', {
+
+    user: req.user,users:await User.find({})
 
   })
 );

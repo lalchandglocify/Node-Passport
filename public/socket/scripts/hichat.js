@@ -41,14 +41,10 @@ HiChat.prototype = {
         this.socket.on('newImg', function(user, img, color) {
             that._displayImage(user, img, color);
         });
-        document.getElementById('loginBtn').addEventListener('click', function() {
             var nickName = document.getElementById('nicknameInput').value;
             if (nickName.trim().length != 0) {
                 that.socket.emit('login', nickName);
-            } else {
-                document.getElementById('nicknameInput').focus();
-            };
-        }, false);
+            }
         document.getElementById('nicknameInput').addEventListener('keyup', function(e) {
             if (e.keyCode == 13) {
                 var nickName = document.getElementById('nicknameInput').value;
