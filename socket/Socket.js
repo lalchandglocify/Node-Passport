@@ -1,7 +1,9 @@
-exports = module.exports = function(io){
+exports = module.exports = function(io,mongoose){
 users = [];
 io.sockets.on('connection', function(socket) {
     //new user login
+    const User = mongoose.model('User');
+    const Messages = require('../models/Message');
     socket.on('login', function(nickname) {
         if (users.indexOf(nickname) > -1) {
             socket.emit('nickExisted');
@@ -22,8 +24,11 @@ io.sockets.on('connection', function(socket) {
         }
     });
     //new message get
-    socket.on('postMsg', function(msg, color) {
-        socket.broadcast.emit('newMsg', socket.nickname, msg, color);
+    socket.on('postMsg', function(msg, color,sender,conversationId) {
+        socket.broadcast.emit('newMsg', socket.nickname, msg, color,sender);
+        let chatMessage = new Messages({ message: msg,senderId: sender, senderName: socket.nickname,conversationId:conversationId });
+
+        chatMessage.save();
     });
     //new image get
     socket.on('img', function(imgData, color) {

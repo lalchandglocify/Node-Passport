@@ -8,8 +8,10 @@ var HiChat = function() {
 };
 HiChat.prototype = {
     init: function() {
+
         var that = this;
         this.socket = io.connect();
+       
         this.socket.on('connect', function() {
             document.getElementById('info').textContent = 'get yourself a nickname :)';
             document.getElementById('nickWrapper').style.display = 'block';
@@ -32,11 +34,11 @@ HiChat.prototype = {
         });
         this.socket.on('system', function(nickName, userCount, type) {
             var msg = nickName + (type == 'login' ? ' joined' : ' left');
-            that._displayNewMsg('system ', msg, 'red');
+          //  that._displayNewMsg('system ', msg, 'red');
             document.getElementById('status').textContent = userCount + (userCount > 1 ? ' users' : ' user') + ' online';
         });
-        this.socket.on('newMsg', function(user, msg, color) {
-            that._displayNewMsg(user, msg, color);
+        this.socket.on('newMsg', function(user, msg, color,senderId) {
+            that._displayNewMsg(user, msg, color,senderId);
         });
         this.socket.on('newImg', function(user, img, color) {
             that._displayImage(user, img, color);
@@ -56,12 +58,16 @@ HiChat.prototype = {
         document.getElementById('sendBtn').addEventListener('click', function() {
             var messageInput = document.getElementById('messageInput'),
                 msg = messageInput.value,
+                sender = document.getElementById('login_id').value;
                 color = document.getElementById('colorStyle').value;
             messageInput.value = '';
             messageInput.focus();
             if (msg.trim().length != 0) {
-                that.socket.emit('postMsg', msg, color);
-                that._displayNewMsg('me', msg, color);
+                conversationId = document.getElementById('conversationId').value;
+                that.socket.emit('postMsg', msg, color,sender,conversationId);
+                login_id = document.getElementById('login_id').value;
+                
+                that._displayNewMsg('me', msg, color,login_id);
                 return;
             };
         }, false);
@@ -69,10 +75,14 @@ HiChat.prototype = {
             var messageInput = document.getElementById('messageInput'),
                 msg = messageInput.value,
                 color = document.getElementById('colorStyle').value;
+                sender = document.getElementById('login_id').value;
             if (e.keyCode == 13 && msg.trim().length != 0) {
                 messageInput.value = '';
-                that.socket.emit('postMsg', msg, color);
-                that._displayNewMsg('me', msg, color);
+                conversationId = document.getElementById('conversationId').value;
+                that.socket.emit('postMsg', msg, color,sender,conversationId);
+                login_id = document.getElementById('login_id').value;
+                
+                that._displayNewMsg('me', msg, color,login_id);
             };
         }, false);
         document.getElementById('clearBtn').addEventListener('click', function() {
@@ -84,7 +94,7 @@ HiChat.prototype = {
                     reader = new FileReader(),
                     color = document.getElementById('colorStyle').value;
                 if (!reader) {
-                    that._displayNewMsg('system', '!your browser doesn\'t support fileReader', 'red');
+                    that._displayNewMsg('system', '!your browser doesn\'t support fileReader', 'red','');
                     this.value = '';
                     return;
                 };
@@ -116,6 +126,7 @@ HiChat.prototype = {
                 messageInput.value = messageInput.value + '[emoji:' + target.title + ']';
             };
         }, false);
+         this.fetch_messsages();
     },
     _initialEmoji: function() {
         var emojiContainer = document.getElementById('emojiWrapper'),
@@ -128,16 +139,19 @@ HiChat.prototype = {
         };
         emojiContainer.appendChild(docFragment);
     },
-    _displayNewMsg: function(user, msg, color) {
-        var container = document.getElementById('historyMsg'),
-            msgToDisplay = document.createElement('p'),
-            date = new Date().toTimeString().substr(0, 8),
-            //determine whether the msg contains emoji
-            msg = this._showEmoji(msg);
-        msgToDisplay.style.color = color || '#000';
-        msgToDisplay.innerHTML = user + '<span class="timespan">(' + date + '): </span>' + msg;
-        container.appendChild(msgToDisplay);
-        container.scrollTop = container.scrollHeight;
+    _displayNewMsg: function(user, msg, color,senderId) {
+        var messages = document.getElementById("messages");
+        login_id = document.getElementById('login_id').value;
+        var timedate = new Date().toLocaleTimeString(); // for now
+       // d.getHours(); // => 9
+        if(login_id==senderId)
+        {
+        messages.insertAdjacentHTML('beforeend','<div class="container_message darker"> <img src="/socket/img/img_avatar2.png" alt="Avatar" class="right" style="width:100%;"> <p>'+msg+'</p> <span class="time-left">'+timedate+'</span> </div>');
+        }
+        else
+        {
+        messages.insertAdjacentHTML('beforeend','<div class="container_message"> <img src="/socket/img/img_avatar2.png" alt="Avatar" style="width:100%;"> <p>'+msg+'</p> <span class="time-right">'+timedate+'</span> </div>');
+        }
     },
     _displayImage: function(user, imgData, color) {
         var container = document.getElementById('historyMsg'),
@@ -162,5 +176,41 @@ HiChat.prototype = {
             };
         };
         return result;
+    },
+
+    fetch_messsages:function()
+    {
+
+        $("#messages").empty();
+         var messages = document.getElementById("messages");
+         login_id = document.getElementById('login_id').value;
+         conversationId = document.getElementById('conversationId').value;
+        (function() {
+  fetch("/messages/get-all/"+conversationId)
+    .then(data => {
+      return data.json();
+    })
+    .then(json => {
+      json.map(data => {
+        if(login_id==data.senderId._id)
+        {
+        messages.insertAdjacentHTML('beforeend','<div class="container_message darker"> <img src="/socket/img/img_avatar2.png" alt="Avatar" class="right" style="width:100%;"> <p>'+data.message+'</p> <span class="time-left">'+data.date+'</span> </div>');
+        }
+        else
+        {
+        messages.insertAdjacentHTML('beforeend','<div class="container_message"> <img src="/socket/img/img_avatar2.png" alt="Avatar" style="width:100%;"> <p>'+data.message+'</p> <span class="time-right">'+data.date+'</span> </div>');
+        }
+        
+      });
+       
+    });
+})();
+    },
+
+    changeUsername:function(name,id)
+    {
+       $('#user_name').text(name); 
+       $('#conversationId').val(id); 
+       this.fetch_messsages();
     }
 };

@@ -6,16 +6,58 @@ ul.w3-ul.w3-card-4 {overflow-y: scroll;}
 .messagebox {width: 868px;margin-left: 65px;} 
 .w3-container, .w3-panel {    min-height: 550px;}
 .inputtype_message {display: flex;}
+.container_message {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+.container_message::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container_message img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.container_message img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+.time-left {
+  float: left;
+  color: #999;
+}
 </style>
 <div class="w3-container">
   <h2>Contact List</h2>
   <ul class="w3-ul w3-card-4">
 
   <% for (var i = 0; i < users.length; i++) { %>
-    <li class="w3-bar" onclick="changeUsername('<%= users[i].name %>');">
+    <li class="w3-bar" onclick="new HiChat().changeUsername('<%= users[i].userId.name %>','<%= users[i].userId._id %>');">
       <img src="/socket/img/img_avatar2.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
       <div class="w3-bar-item">
-        <span class="w3-large"><%= users[i].name %></span><br>
+        <span class="w3-large"><%= users[i].userId.name %></span><br>
         <span>Web Designer</span>
       </div>
     </li>
@@ -31,13 +73,21 @@ ul.w3-ul.w3-card-4 {overflow-y: scroll;}
       <img src="/socket/img/img_avatar2.png" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
       <div class="w3-bar-item">
 
-        <span class="w3-large" id="user_name"><%= users[0].name %></span><br>
+        <span class="w3-large" id="user_name"><%= users[0].userId.name %></span><br>
          <span id="status"></span>
       </div>
     </li>
     <hr>
-    <div id="historyMsg">
-            </div>
+    <div id="historyMsg" style="display:none">
+
+    </div>
+
+<input type="hidden" value="<%= users[0].userId._id %>" id="conversationId">
+<div id ="messages" class="messages">
+
+</div>
+
+    
     <li class="inputtype_message"> 
 
 
@@ -62,6 +112,7 @@ ul.w3-ul.w3-card-4 {overflow-y: scroll;}
             <p id="info">connecting to server...</p>
             <div id="nickWrapper">
                 <input type="hidden" placeHolder="nickname" value="<%= user.name %>" id="nicknameInput" />
+                <input type="hidden"  value="<%= user._id %>" id="login_id" />
                 <input type="hidden" value="OK" id="loginBtn" />
             </div>
         </div>
@@ -70,10 +121,5 @@ ul.w3-ul.w3-card-4 {overflow-y: scroll;}
            
  <script src="/socket.io/socket.io.js"></script>
         <script src="/socket/scripts/hichat.js"></script>
-        <script>
-        function changeUsername(name)
-        {
-          $('#user_name').text(name);
-        }
-        </script>
+      
  <% include ./partials/footer %> 

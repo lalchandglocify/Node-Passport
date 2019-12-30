@@ -63,5 +63,5 @@ app.use('/messages', require('./routes/messages.js'));
 const PORT = process.env.PORT || 5000;
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
-    socket = require('./socket/Socket')(io)
+    socket = require('./socket/Socket')(io,mongoose)
 server.listen(PORT, console.log(`Server started on port ${PORT}`));

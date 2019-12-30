@@ -12,11 +12,11 @@ const Conversation = new mongoose.Schema({
 
   name: {
     type: String,
-    required: true
+    required: false
   }
  
 });
 
-const Conversation = mongoose.model('Conversation', Conversation);
+const Conversations = mongoose.model('Conversation', Conversation);
 
-module.exports = Conversation;
+module.exports = Conversations;
